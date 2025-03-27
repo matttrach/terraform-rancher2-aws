@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1](https://github.com/matttrach/terraform-rancher2-aws/compare/v1.1.0...v1.1.1) (2025-03-27)
+
+
+### Bug Fixes
+
+* split tests to different runners ([#81](https://github.com/matttrach/terraform-rancher2-aws/issues/81)) ([6e320e4](https://github.com/matttrach/terraform-rancher2-aws/commit/6e320e4ff58476267cd92ef3f12a6d6cf261135a))
+
 ## [1.1.0](https://github.com/rancher/terraform-rancher2-aws/compare/v1.0.5...v1.1.0) (2025-03-27)
 
 
