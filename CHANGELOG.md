@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.0.0](https://github.com/matttrach/terraform-rancher2-aws/compare/v1.2.2...v2.0.0) (2025-06-26)
+
+
+### ⚠ BREAKING CHANGES
+
+* rewrite the deployment system ([#101](https://github.com/matttrach/terraform-rancher2-aws/issues/101))
+
+### Bug Fixes
+
+* rewrite the deployment system ([#101](https://github.com/matttrach/terraform-rancher2-aws/issues/101)) ([60b1eaa](https://github.com/matttrach/terraform-rancher2-aws/commit/60b1eaaff93cbbd1149053abec2d1066c07b96e9))
+
 ## [1.2.2](https://github.com/rancher/terraform-rancher2-aws/compare/v1.2.1...v1.2.2) (2025-05-13)
 
 
