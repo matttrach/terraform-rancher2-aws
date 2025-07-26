@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.2](https://github.com/matttrach/terraform-rancher2-aws/compare/v2.0.1...v2.0.2) (2025-07-26)
+
+
+### Bug Fixes
+
+* update readme with testing concerns ([#109](https://github.com/matttrach/terraform-rancher2-aws/issues/109)) ([8450208](https://github.com/matttrach/terraform-rancher2-aws/commit/84502086f135bdd844cd940074bbc45ca7b1d7af))
+
 ## [2.0.1](https://github.com/rancher/terraform-rancher2-aws/compare/v2.0.0...v2.0.1) (2025-07-09)
 
 
