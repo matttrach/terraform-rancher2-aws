@@ -102,6 +102,7 @@
           age
           awscli2
           bashInteractive
+          # claude-code
           cspell
           curl
           dig

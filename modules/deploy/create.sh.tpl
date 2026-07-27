@@ -61,6 +61,7 @@ export TF_PLUGIN_CACHE_DIR="${plugin_cache}"
 echo "Plugin cache directory: $TF_PLUGIN_CACHE_DIR"
 
 export TF_IN_AUTOMATION=1
+export GOMAXPROCS=2
 
 terraform version
 
@@ -92,7 +93,7 @@ while [ $final_exit_code -gt 0 ] && [ $overall_attempt -lt "$max_attempts" ]; do
 
   while [ $apply_exit_code -gt 0 ] && [ $apply_attempt -lt "$max_attempts" ]; do
     # shellcheck disable=SC2154
-    timeout -k 1m "${timeout}" terraform apply -var-file="inputs.tfvars" -no-color -auto-approve -state="tfstate"
+    timeout -k 1m "${timeout}" terraform apply -parallelism=4 -var-file="inputs.tfvars" -no-color -auto-approve -state="tfstate"
     apply_exit_code=$?
 
     if [ $apply_exit_code -eq 124 ]; then echo "Apply timed out after ${timeout}"; fi
@@ -106,7 +107,7 @@ while [ $final_exit_code -gt 0 ] && [ $overall_attempt -lt "$max_attempts" ]; do
 
     while [ $destroy_exit_code -gt 0 ] && [ $destroy_attempt -lt "$max_attempts" ]; do
       # shellcheck disable=SC2154
-      timeout -k 1m "${timeout}" terraform destroy -var-file="inputs.tfvars" -no-color -auto-approve -state="tfstate"
+      timeout -k 1m "${timeout}" terraform destroy -parallelism=4 -var-file="inputs.tfvars" -no-color -auto-approve -state="tfstate"
       destroy_exit_code=$?
 
       if [ $destroy_exit_code -eq 124 ]; then echo "Destroy timed out after ${timeout}"; fi
