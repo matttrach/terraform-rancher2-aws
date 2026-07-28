@@ -61,6 +61,7 @@ export TF_PLUGIN_CACHE_DIR="${plugin_cache}"
 echo "Plugin cache directory: $TF_PLUGIN_CACHE_DIR"
 
 export TF_IN_AUTOMATION=1
+export GOMAXPROCS=2
 
 terraform version
 
@@ -75,7 +76,7 @@ if [ -z "${skip_destroy}" ]; then
   timeout -k 1m "${timeout}" terraform init -no-color
 
   # shellcheck disable=SC2154
-  timeout -k 1m "${timeout}" terraform destroy -var-file="inputs.tfvars" -no-color -auto-approve -state="tfstate" || true
+  timeout -k 1m "${timeout}" terraform destroy -parallelism=4 -var-file="inputs.tfvars" -no-color -auto-approve -state="tfstate" || true
 else
   echo "Not destroying deployed module, it will no longer be managed here."
 fi
