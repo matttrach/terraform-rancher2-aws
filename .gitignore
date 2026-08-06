@@ -36,3 +36,4 @@ static_files.txt
 *.log
 *.bak
 node_modules
+!*.md
