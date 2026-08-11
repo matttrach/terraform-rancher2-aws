@@ -2,7 +2,7 @@
 set -e
 
 # Find files with shebangs, excluding .terraform and .git and *.md
-FILES_WITH_SHEBANG=$(grep -Rl -e '^#!' --exclude-dir=".terraform" --exclude-dir=".git" --exclude="*.md" . || true)
+FILES_WITH_SHEBANG=$(grep -Rl -e '^#!' --exclude-dir=".terraform" --exclude-dir=".git" --exclude="*.md" --exclude="*.js" . || true)
 
 # Find all .sh files in .github/workflows/scripts/
 WORKFLOW_SCRIPTS=$(find .github/workflows/scripts -type f -name "*.sh" 2>/dev/null || true)
