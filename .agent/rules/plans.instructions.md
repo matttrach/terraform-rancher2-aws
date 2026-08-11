@@ -1,28 +1,39 @@
-# Planning Changes
+# Planning Changes & Long-Lived Architectural Blueprints
 
-## Executing Plans
+All plans MUST be documented in a single, unified plan file located under the `.agent/plans/` directory (e.g., `.agent/plans/<PlanName>.md`). We no longer use separate temporary plans in `.agent/agent-memory/`.
 
-When executing plans, build a temporary plan first.
-Write the temporary plan to the `.agent/agent-memory` directory.
-When the user approves the write or replace for the temporary plan, start executing it iteratively; no need to ask before starting.
+## Plans as Architectural Blueprints
 
-Temporary plans should include detailed information and have checkboxes to track progress over many interactive sessions.
-Temporary plans act like a plan progress state, so if an agent fails midway through, we can pick up where we left off.
-A "temporary plan" is different than a normal plan. It doesn't follow the same rules for creation or field generation.
+Plans are not merely transient, temporary check-lists; they are foundational, long-lived architectural documents and technical specifications for the repository. Every plan file is structured to represent a distinct architectural domain (e.g., standardizing the release pipeline, implementing a database wrapper, or configuring security scopes).
 
-Plan execution automatic cut-off:
-Before executing an operation, agents must check their context.
-If context reaches 25% or 200,000 tokens, Gemini Code Assist slows down dramatically. 
-At this point, agents MUST NOT execute any further operations.
-Agents should instead update the temporary plan with progress, inform the user that the context limit has been reached, and instruct them to stop operations and start a new session.
+### Avoid Redundant Plan Sprawl
+* **Rule:** You MUST NOT create a brand new plan file if the task fits under an existing architectural domain or plan.
+* **Collaboration:** Instead of generating a new plan, you MUST *edit* and *adapt* the existing plan, modifying its top-half architectural blueprint and expanding its bottom-half implementation checklist to encompass the new requirements, modifications, or bug fixes.
+* **Lifecycle:** Not every Pull Request requires a new plan file. Updating and expanding an existing blueprint is the preferred mode of development.
 
-## Creating Plans
+## Plan Document Structure
 
-This refers to "Plans" not "Temporary plans" which follow different guidelines.
-When asked to accomplish broad goals, such as "investigate the codebase and update the code to meet our standards" or when asked to add major features, such as "add agentic framework to this repo", create a plan.
-As a guideline, when modifying 5 or more files or modifying 300 lines of code, ask if we should make a plan.
-Plans should include detailed instructions including goals and code snippets.
-Plans should include an "Executed Date" (use "pending" for temporary/ongoing plans) and a "Purpose" field.
-The "Purpose" field should give a high-level abstract of the plan.
-An agent should be able to read all of the "Purpose" fields of plans in `.agent/plans/` to get a good understanding of major changes and historical context in the codebase.
- 
+Each plan file MUST follow a strict structure consisting of two main halves:
+
+### Top Half: Detailed Architectural Blueprint & Spec
+The top half acts as the authoritative technical specification and blueprint for the domain:
+* **Executed Date:** The date the plan was fully executed (formatted as `YYYY-MM-DD` for log sorting), or `"pending"` if execution is ongoing.
+* **Updated Date:** The date the plan was last updated (formatted as `YYYY-MM-DD` for log sorting), or `"pending"` if update is ongoing.
+* **Purpose:** A high-level, clear abstract explaining the domain's goals, architectural intent, and why these changes/structures are established.
+* **Specification Details:** This must contain detailed architectural definitions, sequence/swimlane diagrams, core configuration requirements, code snippets, and structural design rules when necessary (similar to `.agent/plans/ReleaseProcess.md`). It functions as a complete spec for any agent or human to read and follow.
+
+### Bottom Half: Sequential Implementation Checklist
+The bottom half is the concrete, repository-specific execution sequence derived from the blueprint:
+* **Implementation Checklist:** A section named `## Implementation Checklist` containing a sequential, step-by-step implementation checklist.
+* **Agent-Built Checklists:** The agent (or human) reads the top-half architectural specification and dynamically builds/expands the step-by-step implementation checklist to accomplish the target repository changes.
+* **Dynamic Expansion:** The checklist is a living document. It MUST be dynamically expanded to add new sub-tasks, verification steps, or specific bug fixes that become necessary during active development, testing, or iteration (e.g., when adding specific sub-tasks to resolve bug workarounds in release workflows).
+* **Sequential Work Protocol:** Each step of the checklist MUST be worked strictly in turn. You are NOT allowed to skip steps or run steps in parallel if they depend on one another.
+* **Update Checklist Progress:** You MUST update the plan file in place, checking off each step (e.g., `- [ ]` -> `- [x]`) **once it is completed and BEFORE starting the next step**. This ensures the plan file serves as a durable, session-persistent execution state.
+
+### Standard Quality Gate Checklist Integration
+To guarantee 100% compliance with repository engineering standards, the sequential implementation checklist of EVERY plan MUST explicitly incorporate the quality gates of our Standard Development Process (Phases 3, 4, 5, and 6) as concrete, checkbox-tracked checklist items:
+1. **Implementation & Verification:** Standard build, test execution, and local static analysis/linter verification (`tflint`, `actionlint`, `shellcheck`, etc.).
+2. **Proactive Code Review:** Diff validation against `github-copilot-review.instructions.md` to guarantee exactly 0 automated comments.
+3. **Upstream Sync & Staging Isolation:** Switch to `main`, execute `git-sync.sh`, branch off, isolate the current layer's changes, and keep them **unstaged** in the active workspace to maintain color-coded IDE visibility.
+4. **Developer IDE Review Gateway:** Invite the developer to perform their IDE review, obtain explicit manual approval, and perform the authorized conventional commit/push using `APPROVED_BY_USER=1`.
+5. **PR Generation Gateway:** Create the draft Pull Request on GitHub using `create-pr.sh --draft`.
